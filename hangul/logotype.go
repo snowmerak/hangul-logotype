@@ -34,12 +34,17 @@ var engToHan = map[rune]rune{
 }
 
 func 이건모음인가(r rune) bool {
-	_, ok := engToHan[r]
-	if !ok {
-		return false
+	// Check if it's mapped from engToHan
+	if han, ok := engToHan[r]; ok {
+		switch han {
+		case 'ㅑ', 'ㅕ', 'ㅛ', 'ㅠ', 'ㅏ', 'ㅓ', 'ㅗ', 'ㅜ', 'ㅡ', 'ㅣ', 'ㅐ', 'ㅔ':
+			return true
+		default:
+			return false
+		}
 	}
-
-	switch engToHan[r] {
+	// Check direct hangul jamo
+	switch r {
 	case 'ㅑ', 'ㅕ', 'ㅛ', 'ㅠ', 'ㅏ', 'ㅓ', 'ㅗ', 'ㅜ', 'ㅡ', 'ㅣ', 'ㅐ', 'ㅔ':
 		return true
 	default:
@@ -48,12 +53,17 @@ func 이건모음인가(r rune) bool {
 }
 
 func 이건자음인가(r rune) bool {
-	_, ok := engToHan[r]
-	if !ok {
-		return false
+	// Check if it's mapped from engToHan
+	if han, ok := engToHan[r]; ok {
+		switch han {
+		case 'ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ', 'ㄲ', 'ㄸ', 'ㅃ', 'ㅆ', 'ㅉ', 'ㄳ', 'ㄵ', 'ㄶ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅄ':
+			return true
+		default:
+			return false
+		}
 	}
-
-	switch engToHan[r] {
+	// Check direct hangul jamo
+	switch r {
 	case 'ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ', 'ㄲ', 'ㄸ', 'ㅃ', 'ㅆ', 'ㅉ', 'ㄳ', 'ㄵ', 'ㄶ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅄ':
 		return true
 	default:
@@ -140,13 +150,16 @@ func LogoType(writer *bytes.Buffer, input []rune) {
 			} else if 이건모음인가(r) {
 				writeRuneToBuilder(writer, t)
 				t = append(t[:0], r)
+				지금은 = 지금은중성
 			}
 		case 지금은초성:
 			if 이건모음인가(r) {
 				지금은 = 지금은중성
+				t = append(t, r)
 			} else if 이건자음인가(r) {
 				writeRuneToBuilder(writer, t)
 				t = append(t[:0], r)
+				지금은 = 지금은초성
 			}
 		case 지금은중성:
 			if 이건자음인가(r) {
@@ -155,10 +168,14 @@ func LogoType(writer *bytes.Buffer, input []rune) {
 			} else if 이건모음인가(r) {
 				writeRuneToBuilder(writer, t)
 				t = append(t[:0], r)
+				지금은 = 지금은중성
 			}
 		case 지금은종성:
 			if 이건자음인가(r) {
 				t = append(t, r)
+				writeRuneToBuilder(writer, t)
+				t = t[:0]
+				지금은 = 지금은시작
 			} else if 이건모음인가(r) {
 				writeRuneToBuilder(writer, t)
 				t = append(t[:0], r)
