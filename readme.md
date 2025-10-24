@@ -38,9 +38,7 @@ func main() {
 	// 영어 문장 입력
 	input := "dkssudgktpdy, gksrmf!"
 
-	for _, r := range input {
-		typer.WriteRune(r)
-	}
+	typer.WriteRunes([]rune(input))
 
 	// 결과 출력
 	result := string(typer.Result())
@@ -52,6 +50,7 @@ func main() {
 
 - `hangul.NewLogoTyper() *LogoTyper`: 새로운 `LogoTyper` 인스턴스를 생성합니다.
 - `(lt *LogoTyper) WriteRune(r rune)`: 한 문자를 `LogoTyper`에 씁니다. 영어인 경우 자동으로 한글 자모로 변환됩니다.
+- `(lt *LogoTyper) WriteRunes(runes []rune)`: 여러 문자를 한 번에 `LogoTyper`에 씁니다.
 - `(lt *LogoTyper) Result() []byte`: 현재까지 조합된 최종 결과물을 `[]byte`로 반환합니다.
 - `(lt *LogoTyper) Reset()`: `LogoTyper`의 상태(버퍼, 결과)를 초기화합니다.
 

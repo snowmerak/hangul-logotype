@@ -41,6 +41,12 @@ func (lt *LogoTyper) WriteRune(r rune) {
 	}
 }
 
+func (lt *LogoTyper) WriteRunes(runes []rune) {
+	for _, r := range runes {
+		lt.WriteRune(r)
+	}
+}
+
 func (lt *LogoTyper) Result() []byte {
 	LogoType(lt.result, 겹자합치기(lt.buffer))
 	return lt.result.Bytes()
