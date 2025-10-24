@@ -12,16 +12,16 @@ func 이건영어인가(r rune) bool {
 }
 
 var engToHan = map[rune]rune{
-	'q': 'ㅂ', 'Q': 'ㅂ',
-	'w': 'ㅈ', 'W': 'ㅈ',
-	'e': 'ㄷ', 'E': 'ㄷ',
-	'r': 'ㄱ', 'R': 'ㄱ',
-	't': 'ㅅ', 'T': 'ㅅ',
+	'q': 'ㅂ', 'Q': 'ㅃ', // Q는 쌍비읍
+	'w': 'ㅈ', 'W': 'ㅉ', // W는 쌍지읒
+	'e': 'ㄷ', 'E': 'ㄸ', // E는 쌍디귿
+	'r': 'ㄱ', 'R': 'ㄲ', // R는 쌍기역
+	't': 'ㅅ', 'T': 'ㅆ', // T는 쌍시옷
 	'y': 'ㅛ', 'Y': 'ㅛ',
 	'u': 'ㅕ', 'U': 'ㅕ',
 	'i': 'ㅑ', 'I': 'ㅑ',
-	'o': 'ㅐ', 'O': 'ㅐ',
-	'p': 'ㅔ', 'P': 'ㅔ',
+	'o': 'ㅐ', 'O': 'ㅒ', // O는 ㅒ (이중모음)
+	'p': 'ㅔ', 'P': 'ㅖ', // P는 ㅖ (이중모음)
 	'a': 'ㅁ', 'A': 'ㅁ',
 	's': 'ㄴ', 'S': 'ㄴ',
 	'd': 'ㅇ', 'D': 'ㅇ',
@@ -44,15 +44,16 @@ func 이건모음인가(r rune) bool {
 	// Check if it's mapped from engToHan
 	if han, ok := engToHan[r]; ok {
 		switch han {
-		case 'ㅑ', 'ㅕ', 'ㅛ', 'ㅠ', 'ㅏ', 'ㅓ', 'ㅗ', 'ㅜ', 'ㅡ', 'ㅣ', 'ㅐ', 'ㅔ':
+		case 'ㅑ', 'ㅕ', 'ㅛ', 'ㅠ', 'ㅏ', 'ㅓ', 'ㅗ', 'ㅜ', 'ㅡ', 'ㅣ', 'ㅐ', 'ㅔ', 'ㅒ', 'ㅖ':
 			return true
 		default:
 			return false
 		}
 	}
-	// Check direct hangul jamo
+	// Check direct hangul jamo (including double vowels)
 	switch r {
-	case 'ㅑ', 'ㅕ', 'ㅛ', 'ㅠ', 'ㅏ', 'ㅓ', 'ㅗ', 'ㅜ', 'ㅡ', 'ㅣ', 'ㅐ', 'ㅔ':
+	case 'ㅑ', 'ㅕ', 'ㅛ', 'ㅠ', 'ㅏ', 'ㅓ', 'ㅗ', 'ㅜ', 'ㅡ', 'ㅣ', 'ㅐ', 'ㅔ', 'ㅒ', 'ㅖ',
+		'ㅘ', 'ㅙ', 'ㅚ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅢ': // 이중모음 추가
 		return true
 	default:
 		return false
@@ -122,6 +123,32 @@ var doubleConsonants = map[[2]rune]rune{
 	{'ㅂ', 'ㅅ'}: 'ㅄ',
 }
 
+// 이중모음 매핑
+var doubleVowels = map[[2]rune]rune{
+	{'ㅗ', 'ㅏ'}: 'ㅘ',
+	{'ㅗ', 'ㅐ'}: 'ㅙ',
+	{'ㅗ', 'ㅣ'}: 'ㅚ',
+	{'ㅜ', 'ㅓ'}: 'ㅝ',
+	{'ㅜ', 'ㅔ'}: 'ㅞ',
+	{'ㅜ', 'ㅣ'}: 'ㅟ',
+	{'ㅡ', 'ㅣ'}: 'ㅢ',
+}
+
+// 겹받침 분리 매핑 (첫 자음, 두 번째 자음)
+var 겹받침분리 = map[rune][2]rune{
+	'ㄳ': {'ㄱ', 'ㅅ'},
+	'ㄵ': {'ㄴ', 'ㅈ'},
+	'ㄶ': {'ㄴ', 'ㅎ'},
+	'ㄺ': {'ㄹ', 'ㄱ'},
+	'ㄻ': {'ㄹ', 'ㅁ'},
+	'ㄼ': {'ㄹ', 'ㅂ'},
+	'ㄽ': {'ㄹ', 'ㅅ'},
+	'ㄾ': {'ㄹ', 'ㅌ'},
+	'ㄿ': {'ㄹ', 'ㅍ'},
+	'ㅀ': {'ㄹ', 'ㅎ'},
+	'ㅄ': {'ㅂ', 'ㅅ'},
+}
+
 var 초성매핑 = map[rune]int{
 	'ㄱ': 0, 'ㄲ': 1, 'ㄴ': 2, 'ㄷ': 3, 'ㄸ': 4,
 	'ㄹ': 5, 'ㅁ': 6, 'ㅂ': 7, 'ㅃ': 8, 'ㅅ': 9,
@@ -151,8 +178,15 @@ func 겹받침합치기(input []rune) []rune {
 	for i := 0; i < len(input); i++ {
 		if i < len(input)-1 {
 			pair := [2]rune{input[i], input[i+1]}
+			// 자음 조합 체크
 			if dc, ok := doubleConsonants[pair]; ok {
 				result = append(result, dc)
+				i++
+				continue
+			}
+			// 모음 조합 체크
+			if dv, ok := doubleVowels[pair]; ok {
+				result = append(result, dv)
 				i++
 				continue
 			}
@@ -263,10 +297,20 @@ func LogoType(writer *bytes.Buffer, input []rune) {
 				t = append(t[:0], r)
 				지금은 = 지금은초성
 			} else if 이건모음인가(r) {
-				// 종성 자음을 빼서 다음 음절의 초성으로 만듦
-				writeRuneToBuilder(writer, t[:len(t)-1])
-				t = append(t[:0], t[len(t)-1], r)
-				지금은 = 지금은중성
+				// 종성이 겹받침인 경우 분리
+				종성 := t[len(t)-1]
+				if 분리됨, ok := 겹받침분리[종성]; ok {
+					// 첫 번째 자음은 종성으로, 두 번째는 다음 초성으로
+					t[len(t)-1] = 분리됨[0]
+					writeRuneToBuilder(writer, t)
+					t = append(t[:0], 분리됨[1], r)
+					지금은 = 지금은중성
+				} else {
+					// 단일 종성은 다음 음절 초성으로
+					writeRuneToBuilder(writer, t[:len(t)-1])
+					t = append(t[:0], 종성, r)
+					지금은 = 지금은중성
+				}
 			} else {
 				writeRuneToBuilder(writer, t)
 				t = append(t[:0], r)
