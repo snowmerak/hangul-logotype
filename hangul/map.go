@@ -1,6 +1,8 @@
 package hangul
 
-import "strings"
+import (
+	"bytes"
+)
 
 var engToHan = map[rune]rune{
 	'q': 'ㅂ', 'Q': 'ㅂ',
@@ -112,13 +114,13 @@ func 겹받침합치기(input []rune) []rune {
 	return result
 }
 
-func writeRuneToBuilder(builder *strings.Builder, r []rune) {
+func writeRuneToBuilder(builder *bytes.Buffer, r []rune) {
 	for _, rr := range r {
 		builder.WriteRune(rr)
 	}
 }
 
-func LogoType(writer *strings.Builder, input []rune) {
+func LogoType(writer *bytes.Buffer, input []rune) {
 	const (
 		지금은시작 = iota
 		지금은초성
