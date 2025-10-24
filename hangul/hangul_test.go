@@ -134,14 +134,74 @@ func TestLogoType(t *testing.T) {
 }
 
 func TestLogoTyper(t *testing.T) {
-	lt := NewLogoTyper()
-	lt.WriteRune('ㄱ')
-	lt.WriteRune('ㅏ')
-	lt.WriteRune(' ')
-	result := string(lt.Result())
-	expected := "가 "
-	if result != expected {
-		t.Errorf("expected %q, got %q", expected, result)
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "basic hangul input",
+			input:    "ㄱㅏ ",
+			expected: "가 ",
+		},
+		{
+			name:     "english to hangul conversion",
+			input:    "rk ",
+			expected: "가 ",
+		},
+		{
+			name:     "english word: gksrmf (한글)",
+			input:    "gksrmf",
+			expected: "한글",
+		},
+		{
+			name:     "english sentence: dkssud gksrmf",
+			input:    "dkssud gksrmf",
+			expected: "안녕 한글",
+		},
+		{
+			name:     "mixed with special chars",
+			input:    "gksrmf!",
+			expected: "한글!",
+		},
+		{
+			name:     "english: tkfkdgo (사랑해)",
+			input:    "tkfkdgo",
+			expected: "사랑해",
+		},
+		{
+			name:     "long sentence: 안녕하세요 반갑습니다",
+			input:    "dkssudgktpdy qksrkqtmqslek",
+			expected: "안녕하세요 반갑습니다",
+		},
+		{
+			name:     "long sentence with punctuation",
+			input:    "gksrmfdms dnleogks gksrmfdl ehlqslek.",
+			expected: "한글은 위대한 한글이 됩니다.",
+		},
+		{
+			name:     "sentence: 프로그래밍은 재미있어요!",
+			input:    "vmfhrmfoalddms woaldlTdjdy!",
+			expected: "프로그래밍은 재미있어요!",
+		},
+		{
+			name:     "sentence with newline: 저는 한글을 사랑합니다!",
+			input:    "wjsms gksrmfdmf tkfkdgkqslek!",
+			expected: "저는 한글을 사랑합니다!",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			lt := NewLogoTyper()
+			for _, r := range tt.input {
+				lt.WriteRune(r)
+			}
+			result := string(lt.Result())
+			if result != tt.expected {
+				t.Errorf("expected %q, got %q", tt.expected, result)
+			}
+		})
 	}
 }
 
