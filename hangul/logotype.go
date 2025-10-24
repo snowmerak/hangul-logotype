@@ -71,6 +71,13 @@ func 이건자음인가(r rune) bool {
 	}
 }
 
+func 이건한글인가(r rune) bool {
+	if 이건모음인가(r) || 이건자음인가(r) {
+		return true
+	}
+	return false
+}
+
 var breakWords = map[rune]struct{}{
 	' ':  {},
 	'.':  {},
@@ -108,6 +115,30 @@ var doubleConsonants = map[[2]rune]rune{
 	{'ㅂ', 'ㅅ'}: 'ㅄ',
 }
 
+var 초성매핑 = map[rune]int{
+	'ㄱ': 0, 'ㄲ': 1, 'ㄴ': 2, 'ㄷ': 3, 'ㄸ': 4,
+	'ㄹ': 5, 'ㅁ': 6, 'ㅂ': 7, 'ㅃ': 8, 'ㅅ': 9,
+	'ㅆ': 10, 'ㅇ': 11, 'ㅈ': 12, 'ㅉ': 13, 'ㅊ': 14,
+	'ㅋ': 15, 'ㅌ': 16, 'ㅍ': 17, 'ㅎ': 18,
+}
+
+var 중성매핑 = map[rune]int{
+	'ㅏ': 0, 'ㅐ': 1, 'ㅑ': 2, 'ㅒ': 3, 'ㅓ': 4,
+	'ㅔ': 5, 'ㅕ': 6, 'ㅖ': 7, 'ㅗ': 8, 'ㅘ': 9,
+	'ㅙ': 10, 'ㅚ': 11, 'ㅛ': 12, 'ㅜ': 13, 'ㅝ': 14,
+	'ㅞ': 15, 'ㅟ': 16, 'ㅠ': 17, 'ㅡ': 18, 'ㅢ': 19,
+	'ㅣ': 20,
+}
+
+var 종성매핑 = map[rune]int{
+	'ㄱ': 1, 'ㄲ': 2, 'ㄳ': 3, 'ㄴ': 4, 'ㄵ': 5,
+	'ㄶ': 6, 'ㄷ': 7, 'ㄹ': 8, 'ㄺ': 9, 'ㄻ': 10,
+	'ㄼ': 11, 'ㄽ': 12, 'ㄾ': 13, 'ㄿ': 14, 'ㅀ': 15,
+	'ㅁ': 16, 'ㅂ': 17, 'ㅄ': 18, 'ㅅ': 19, 'ㅆ': 20,
+	'ㅇ': 21, 'ㅈ': 22, 'ㅊ': 23, 'ㅋ': 24, 'ㅌ': 25,
+	'ㅍ': 26, 'ㅎ': 27,
+}
+
 func 겹받침합치기(input []rune) []rune {
 	result := make([]rune, 0, len(input))
 	for i := 0; i < len(input); i++ {
@@ -125,6 +156,43 @@ func 겹받침합치기(input []rune) []rune {
 }
 
 func writeRuneToBuilder(builder *bytes.Buffer, r []rune) {
+	if len(r) == 0 {
+		return
+	}
+
+	if 이건한글인가(r[0]) {
+		switch len(r) {
+		case 1:
+			builder.WriteRune(r[0])
+			return
+		case 2:
+			조합 := [2]bool{이건자음인가(r[0]), 이건모음인가(r[1])}
+			switch 조합 {
+			case [2]bool{true, true}:
+				초성idx, 초성존재 := 초성매핑[r[0]]
+				중성idx, 중성존재 := 중성매핑[r[1]]
+				if 초성존재 && 중성존재 {
+					합성자 := 0xAC00 + 초성idx*21*28 + 중성idx*28
+					builder.WriteRune(rune(합성자))
+					return
+				}
+			}
+		case 3:
+			조합 := [3]bool{이건자음인가(r[0]), 이건모음인가(r[1]), 이건자음인가(r[2])}
+			switch 조합 {
+			case [3]bool{true, true, true}:
+				초성idx, 초성존재 := 초성매핑[r[0]]
+				중성idx, 중성존재 := 중성매핑[r[1]]
+				종성idx, 종성존재 := 종성매핑[r[2]]
+				if 초성존재 && 중성존재 && 종성존재 {
+					합성자 := 0xAC00 + 초성idx*21*28 + 중성idx*28 + 종성idx
+					builder.WriteRune(rune(합성자))
+					return
+				}
+			}
+		}
+	}
+
 	for _, rr := range r {
 		builder.WriteRune(rr)
 	}

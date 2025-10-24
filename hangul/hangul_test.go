@@ -57,52 +57,52 @@ func TestLogoType(t *testing.T) {
 		{
 			name:     "simple syllable",
 			input:    []rune{'ㄱ', 'ㅏ'},
-			expected: "ㄱㅏ",
+			expected: "가",
 		},
 		{
 			name:     "syllable with final",
 			input:    []rune{'ㄱ', 'ㅏ', 'ㄴ'},
-			expected: "ㄱㅏㄴ",
+			expected: "간",
 		},
 		{
 			name:     "multiple syllables",
 			input:    []rune{'ㄱ', 'ㅏ', 'ㄴ', 'ㅏ'},
-			expected: "ㄱㅏㄴㅏ",
+			expected: "간아",
 		},
 		{
 			name:     "double consonant",
 			input:    []rune{'ㄱ', 'ㄱ', 'ㅏ'},
-			expected: "ㄲㅏ",
+			expected: "까",
 		},
 		{
 			name:     "word: 한글 (hangul)",
 			input:    []rune{'ㅎ', 'ㅏ', 'ㄴ', 'ㄱ', 'ㅡ', 'ㄹ'},
-			expected: "ㅎㅏㄴㄱㅡㄹ",
+			expected: "한글",
 		},
 		{
 			name:     "word: 사랑 (love)",
 			input:    []rune{'ㅅ', 'ㅏ', 'ㄹ', 'ㅏ', 'ㅇ'},
-			expected: "ㅅㅏㄹㅏㅇ",
+			expected: "사랑",
 		},
 		{
 			name:     "word: 컴퓨터 (computer)",
 			input:    []rune{'ㅋ', 'ㅓ', 'ㅁ', 'ㅍ', 'ㅠ', 'ㅌ', 'ㅓ'},
-			expected: "ㅋㅓㅁㅍㅠㅌㅓ",
+			expected: "컴퓨터",
 		},
 		{
 			name:     "word with double final: 닭 (chicken)",
 			input:    []rune{'ㄷ', 'ㅏ', 'ㄹ', 'ㄱ'},
-			expected: "ㄷㅏㄺ",
+			expected: "닭",
 		},
 		{
 			name:     "word with space: 안녕 하세요",
 			input:    []rune{'ㅇ', 'ㅏ', 'ㄴ', 'ㄴ', 'ㅕ', 'ㅇ', ' ', 'ㅎ', 'ㅏ', 'ㅅ', 'ㅔ', 'ㅇ', 'ㅛ'},
-			expected: "ㅇㅏㄴㄴㅕㅇ ㅎㅏㅅㅔㅇㅛ",
+			expected: "안녕 하세요",
 		},
 		{
 			name:     "consecutive consonants after final",
 			input:    []rune{'ㄱ', 'ㅏ', 'ㄴ', 'ㄱ', 'ㅏ'},
-			expected: "ㄱㅏㄴㄱㅏ",
+			expected: "간가",
 		},
 		{
 			name:     "consonant only start",
@@ -117,7 +117,7 @@ func TestLogoType(t *testing.T) {
 		{
 			name:     "mixed with special chars",
 			input:    []rune{'ㅎ', 'ㅏ', 'ㄴ', '.', 'ㄱ', 'ㅡ', 'ㄹ', '!'},
-			expected: "ㅎㅏㄴ.ㄱㅡㄹ!",
+			expected: "한.글!",
 		},
 	}
 
@@ -139,7 +139,7 @@ func TestLogoTyper(t *testing.T) {
 	lt.WriteRune('ㅏ')
 	lt.WriteRune(' ')
 	result := string(lt.Result())
-	expected := "ㄱㅏ "
+	expected := "가 "
 	if result != expected {
 		t.Errorf("expected %q, got %q", expected, result)
 	}
