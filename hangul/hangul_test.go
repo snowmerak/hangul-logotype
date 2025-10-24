@@ -74,6 +74,51 @@ func TestLogoType(t *testing.T) {
 			input:    []rune{'ㄱ', 'ㄱ', 'ㅏ'},
 			expected: "ㄲㅏ",
 		},
+		{
+			name:     "word: 한글 (hangul)",
+			input:    []rune{'ㅎ', 'ㅏ', 'ㄴ', 'ㄱ', 'ㅡ', 'ㄹ'},
+			expected: "ㅎㅏㄴㄱㅡㄹ",
+		},
+		{
+			name:     "word: 사랑 (love)",
+			input:    []rune{'ㅅ', 'ㅏ', 'ㄹ', 'ㅏ', 'ㅇ'},
+			expected: "ㅅㅏㄹㅏㅇ",
+		},
+		{
+			name:     "word: 컴퓨터 (computer)",
+			input:    []rune{'ㅋ', 'ㅓ', 'ㅁ', 'ㅍ', 'ㅠ', 'ㅌ', 'ㅓ'},
+			expected: "ㅋㅓㅁㅍㅠㅌㅓ",
+		},
+		{
+			name:     "word with double final: 닭 (chicken)",
+			input:    []rune{'ㄷ', 'ㅏ', 'ㄹ', 'ㄱ'},
+			expected: "ㄷㅏㄺ",
+		},
+		{
+			name:     "word with space: 안녕 하세요",
+			input:    []rune{'ㅇ', 'ㅏ', 'ㄴ', 'ㄴ', 'ㅕ', 'ㅇ', ' ', 'ㅎ', 'ㅏ', 'ㅅ', 'ㅔ', 'ㅇ', 'ㅛ'},
+			expected: "ㅇㅏㄴㄴㅕㅇ ㅎㅏㅅㅔㅇㅛ",
+		},
+		{
+			name:     "consecutive consonants after final",
+			input:    []rune{'ㄱ', 'ㅏ', 'ㄴ', 'ㄱ', 'ㅏ'},
+			expected: "ㄱㅏㄴㄱㅏ",
+		},
+		{
+			name:     "consonant only start",
+			input:    []rune{'ㄱ', 'ㄴ', 'ㄷ'},
+			expected: "ㄱㄴㄷ",
+		},
+		{
+			name:     "vowel only start",
+			input:    []rune{'ㅏ', 'ㅓ', 'ㅗ'},
+			expected: "ㅏㅓㅗ",
+		},
+		{
+			name:     "mixed with special chars",
+			input:    []rune{'ㅎ', 'ㅏ', 'ㄴ', '.', 'ㄱ', 'ㅡ', 'ㄹ', '!'},
+			expected: "ㅎㅏㄴ.ㄱㅡㄹ!",
+		},
 	}
 
 	for _, tt := range tests {
