@@ -35,13 +35,13 @@ func (lt *LogoTyper) WriteRune(r rune) {
 	}
 	lt.buffer = append(lt.buffer, r)
 	if _, ok := lt.breakWords[r]; ok {
-		LogoType(lt.result, 겹받침합치기(lt.buffer[:len(lt.buffer)-1]))
+		LogoType(lt.result, 겹자합치기(lt.buffer[:len(lt.buffer)-1]))
 		lt.result.WriteRune(r)
 		lt.buffer = lt.buffer[:0]
 	}
 }
 
 func (lt *LogoTyper) Result() []byte {
-	LogoType(lt.result, 겹받침합치기(lt.buffer))
+	LogoType(lt.result, 겹자합치기(lt.buffer))
 	return lt.result.Bytes()
 }

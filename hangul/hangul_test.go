@@ -35,7 +35,7 @@ func Test겹받침합치기(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := 겹받침합치기(tt.input)
+			result := 겹자합치기(tt.input)
 			if len(result) != len(tt.expected) {
 				t.Errorf("expected %v, got %v", tt.expected, result)
 			}
