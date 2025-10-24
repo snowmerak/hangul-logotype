@@ -205,8 +205,50 @@ func TestLogoTyper(t *testing.T) {
 	}
 }
 
+func TestLogoTyperSebulshik(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "word: 한글",
+			input:    "mfskgw",
+			expected: "한글",
+		},
+		{
+			name:     "word: 세벌식",
+			input:    "nc;twndx",
+			expected: "세벌식",
+		},
+		{
+			name:     "final consonant with digit",
+			input:    "hv1",
+			expected: "놓",
+		},
+		{
+			name:     "double final consonant",
+			input:    "kfX",
+			expected: "값",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			lt := NewLogoTyperWithLayout(SebulshikFinalLayout)
+			for _, r := range tt.input {
+				lt.WriteRune(r)
+			}
+			result := string(lt.Result())
+			if result != tt.expected {
+				t.Errorf("expected %q, got %q", tt.expected, result)
+			}
+		})
+	}
+}
+
 func Test이건모음인가(t *testing.T) {
-	// Test with engToHan mapped runes
+	// Test with default keyboard layout mapping
 	if 이건모음인가('a') { // ㅁ is consonant
 		t.Error("expected false for 'a' -> ㅁ")
 	}
