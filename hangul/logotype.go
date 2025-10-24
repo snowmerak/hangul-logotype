@@ -4,6 +4,13 @@ import (
 	"bytes"
 )
 
+func 이건영어인가(r rune) bool {
+	if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') {
+		return true
+	}
+	return false
+}
+
 var engToHan = map[rune]rune{
 	'q': 'ㅂ', 'Q': 'ㅂ',
 	'w': 'ㅈ', 'W': 'ㅈ',
