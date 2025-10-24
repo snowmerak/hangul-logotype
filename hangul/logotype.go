@@ -256,8 +256,9 @@ func LogoType(writer *bytes.Buffer, input []rune) {
 				t = append(t[:0], r)
 				지금은 = 지금은초성
 			} else if 이건모음인가(r) {
-				writeRuneToBuilder(writer, t)
-				t = append(t[:0], r)
+				// 종성 자음을 빼서 다음 음절의 초성으로 만듦
+				writeRuneToBuilder(writer, t[:len(t)-1])
+				t = append(t[:0], t[len(t)-1], r)
 				지금은 = 지금은중성
 			} else {
 				writeRuneToBuilder(writer, t)

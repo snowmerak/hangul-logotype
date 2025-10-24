@@ -67,7 +67,7 @@ func TestLogoType(t *testing.T) {
 		{
 			name:     "multiple syllables",
 			input:    []rune{'ㄱ', 'ㅏ', 'ㄴ', 'ㅏ'},
-			expected: "간아",
+			expected: "가나",
 		},
 		{
 			name:     "double consonant",
