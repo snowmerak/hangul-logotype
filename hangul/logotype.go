@@ -29,5 +29,11 @@ func (lt *LogoTyper) Reset() {
 func (lt *LogoTyper) WriteRune(r rune) {
 	lt.buffer = append(lt.buffer, r)
 	if _, ok := lt.breakWords[r]; ok {
+		LogoType(lt.result, 겹받침합치기(lt.buffer))
 	}
+}
+
+func (lt *LogoTyper) Result() []byte {
+	LogoType(lt.result, 겹받침합치기(lt.buffer))
+	return lt.result.Bytes()
 }
