@@ -17,9 +17,9 @@ func Test겹받침합치기(t *testing.T) {
 			expected: []rune{'ㄱ', 'ㅏ'},
 		},
 		{
-			name:     "double consonant ㄲ",
+			name:     "double consonant separate letters",
 			input:    []rune{'ㄱ', 'ㄱ'},
-			expected: []rune{'ㄲ'},
+			expected: []rune{'ㄱ', 'ㄱ'},
 		},
 		{
 			name:     "double consonant ㄳ",
@@ -27,9 +27,9 @@ func Test겹받침합치기(t *testing.T) {
 			expected: []rune{'ㄳ'},
 		},
 		{
-			name:     "mixed",
+			name:     "mixed with actual double final",
 			input:    []rune{'ㄱ', 'ㄱ', 'ㅏ', 'ㄹ', 'ㅁ'},
-			expected: []rune{'ㄲ', 'ㅏ', 'ㄻ'},
+			expected: []rune{'ㄱ', 'ㄱ', 'ㅏ', 'ㄻ'},
 		},
 	}
 
@@ -70,9 +70,14 @@ func TestLogoType(t *testing.T) {
 			expected: "가나",
 		},
 		{
-			name:     "double consonant",
-			input:    []rune{'ㄱ', 'ㄱ', 'ㅏ'},
+			name:     "explicit double consonant rune",
+			input:    []rune{'ㄲ', 'ㅏ'},
 			expected: "까",
+		},
+		{
+			name:     "repeated consonant without shift",
+			input:    []rune{'ㄱ', 'ㄱ', 'ㅏ'},
+			expected: "ㄱ가",
 		},
 		{
 			name:     "word: 한글 (hangul)",
@@ -153,6 +158,21 @@ func TestLogoTyper(t *testing.T) {
 			name:     "english word: gksrmf (한글)",
 			input:    "gksrmf",
 			expected: "한글",
+		},
+		{
+			name:     "shift double consonant",
+			input:    "Rk",
+			expected: "까",
+		},
+		{
+			name:     "lowercase repeated consonant",
+			input:    "rrk",
+			expected: "ㄱ가",
+		},
+		{
+			name:     "double s without shift",
+			input:    "tt",
+			expected: "ㅅㅅ",
 		},
 		{
 			name:     "english sentence: dkssud gksrmf",
