@@ -263,6 +263,11 @@ var 겹받침분리 = map[rune][2]rune{
 	'ㄿ': {'ㄹ', 'ㅍ'},
 	'ㅀ': {'ㄹ', 'ㅎ'},
 	'ㅄ': {'ㅂ', 'ㅅ'},
+	'ㄲ': {'ㄱ', 'ㄱ'},
+	'ㄸ': {'ㄷ', 'ㄷ'},
+	'ㅃ': {'ㅂ', 'ㅂ'},
+	'ㅆ': {'ㅅ', 'ㅅ'},
+	'ㅉ': {'ㅈ', 'ㅈ'},
 }
 
 var 초성매핑 = map[rune]int{
@@ -295,6 +300,12 @@ func 겹자합치기(input []rune) []rune {
 		if i < len(input)-1 {
 			pair := [2]rune{input[i], input[i+1]}
 			if dc, ok := doubleConsonants[pair]; ok {
+				// 합친 직후에 모음이 오는지 확인
+				if i+2 < len(input) && 이건모음인가(input[i+2]) {
+					// 모음이 오면 합치지 않음
+					result = append(result, input[i])
+					continue
+				}
 				result = append(result, dc)
 				i++
 				continue

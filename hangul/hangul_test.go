@@ -100,6 +100,11 @@ func TestLogoType(t *testing.T) {
 			expected: "닭",
 		},
 		{
+			name:     "word: 각궁 (repeated consonants)",
+			input:    []rune{'ㄱ', 'ㅏ', 'ㄱ', 'ㄱ', 'ㅜ', 'ㅇ'},
+			expected: "각궁",
+		},
+		{
 			name:     "word with space: 안녕 하세요",
 			input:    []rune{'ㅇ', 'ㅏ', 'ㄴ', 'ㄴ', 'ㅕ', 'ㅇ', ' ', 'ㅎ', 'ㅏ', 'ㅅ', 'ㅔ', 'ㅇ', 'ㅛ'},
 			expected: "안녕 하세요",
