@@ -143,6 +143,81 @@ func TestLogoType(t *testing.T) {
 	}
 }
 
+func TestLogoType_Complex(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    []rune
+		expected string
+	}{
+		{
+			name:     "double final moves to initial (달가)",
+			input:    []rune{'ㄷ', 'ㅏ', 'ㄹ', 'ㄱ', 'ㅏ'},
+			expected: "달가",
+		},
+		{
+			name:     "double final preserved (닭ㄱ)",
+			input:    []rune{'ㄷ', 'ㅏ', 'ㄹ', 'ㄱ', 'ㄱ'},
+			expected: "닭ㄱ",
+		},
+		{
+			name:     "complex vowel combination (ㅗ + ㅏ)",
+			input:    []rune{'ㄱ', 'ㅗ', 'ㅏ'},
+			expected: "과",
+		},
+		{
+			name:     "complex vowel combination (ㅗ + ㅐ)",
+			input:    []rune{'ㄱ', 'ㅗ', 'ㅐ'},
+			expected: "괘",
+		},
+		{
+			name:     "complex vowel combination (ㅗ + ㅣ)",
+			input:    []rune{'ㄱ', 'ㅗ', 'ㅣ'},
+			expected: "괴",
+		},
+		{
+			name:     "complex vowel + final (완)",
+			input:    []rune{'ㅇ', 'ㅗ', 'ㅏ', 'ㄴ'},
+			expected: "완",
+		},
+		{
+			name:     "complex vowel (ㅜ + ㅓ)",
+			input:    []rune{'ㄷ', 'ㅜ', 'ㅓ'},
+			expected: "둬",
+		},
+		{
+			name:     "complex vowel + final (ㅜ + ㅓ + ㄴ)",
+			input:    []rune{'ㄷ', 'ㅜ', 'ㅓ', 'ㄴ'},
+			expected: "둰",
+		},
+		{
+			name:     "vowel + vowel separation (과ㅣ)",
+			input:    []rune{'ㄱ', 'ㅗ', 'ㅏ', 'ㅣ'},
+			expected: "과ㅣ",
+		},
+		{
+			name:     "invalid double final (각ㄷ)",
+			input:    []rune{'ㄱ', 'ㅏ', 'ㄱ', 'ㄷ'},
+			expected: "각ㄷ",
+		},
+		{
+			name:     "vowel starting without initial (ㅏㄴ)",
+			input:    []rune{'ㅏ', 'ㄴ'},
+			expected: "ㅏㄴ",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var buf bytes.Buffer
+			LogoType(&buf, tt.input)
+			result := buf.String()
+			if result != tt.expected {
+				t.Errorf("expected %q, got %q", tt.expected, result)
+			}
+		})
+	}
+}
+
 func TestLogoTyper(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -230,6 +305,106 @@ func TestLogoTyper(t *testing.T) {
 	}
 }
 
+func TestLogoTyper_Complex_Dubeolshik(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "final to initial movement (닮)",
+			input:    "ekfa",
+			expected: "닮",
+		},
+		{
+			name:     "double final preserved (닭)",
+			input:    "ekfr",
+			expected: "닭",
+		},
+		{
+			name:     "complex vowel ㅗ + ㅏ (와)",
+			input:    "dhk",
+			expected: "와",
+		},
+		{
+			name:     "complex vowel ㅗ + ㅐ (왜)",
+			input:    "dho",
+			expected: "왜",
+		},
+		{
+			name:     "complex vowel ㅗ + ㅣ (외)",
+			input:    "dhl",
+			expected: "외",
+		},
+		{
+			name:     "complex vowel + final (완)",
+			input:    "dhks",
+			expected: "완",
+		},
+		{
+			name:     "complex vowel ㅜ + ㅓ (둬)",
+			input:    "enj",
+			expected: "둬",
+		},
+		{
+			name:     "complex vowel ㅜ + ㅓ + final (둰)",
+			input:    "enjs",
+			expected: "둰",
+		},
+		{
+			name:     "shift + consonant (까)",
+			input:    "Rk",
+			expected: "까",
+		},
+		{
+			name:     "shift + vowel (ㅖ)",
+			input:    "P",
+			expected: "ㅖ",
+		},
+		{
+			name:     "shift + vowel + final (뎨)",
+			input:    "eP",
+			expected: "뎨",
+		},
+		{
+			name:     "number breaks syllable (가1)",
+			input:    "rk1",
+			expected: "가1",
+		},
+		{
+			name:     "special char breaks syllable (한ㄱ!)",
+			input:    "gksr!",
+			expected: "한ㄱ!",
+		},
+		{
+			name:     "repeated consonants (가가가)",
+			input:    "rkrkrk",
+			expected: "가가가",
+		},
+		{
+			name:     "repeated vowels (ㅏ닫)",
+			input:    "keke",
+			expected: "ㅏ닫",
+		},
+		{
+			name:     "vowel start (안녕)",
+			input:    "dkssud",
+			expected: "안녕",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			lt := NewLogoTyper()
+			lt.WriteString(tt.input)
+			result := string(lt.Result())
+			if result != tt.expected {
+				t.Errorf("expected %q, got %q", tt.expected, result)
+			}
+		})
+	}
+}
+
 func TestLogoTyperSebulshik(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -264,6 +439,76 @@ func TestLogoTyperSebulshik(t *testing.T) {
 			for _, r := range tt.input {
 				lt.WriteRune(r)
 			}
+			result := string(lt.Result())
+			if result != tt.expected {
+				t.Errorf("expected %q, got %q", tt.expected, result)
+			}
+		})
+	}
+}
+
+func TestLogoTyperSebulshik_Complex(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "initial-medial-final (학)",
+			input:    "mfk",
+			expected: "학",
+		},
+		{
+			name:     "initial-medial-final + initial (학ㄴ)",
+			input:    "mfks",
+			expected: "학ㄴ",
+		},
+		{
+			name:     "initial-medial-final + medial (하가)",
+			input:    "mfkf",
+			expected: "하가",
+		},
+		{
+			name:     "initial-medial-final + final (학ㅈ)",
+			input:    "mfkl",
+			expected: "학ㅈ",
+		},
+		{
+			name:     "initial-medial-final + initial-medial (학느)",
+			input:    "mfksg",
+			expected: "학느",
+		},
+		{
+			name:     "double final + medial (갑사)",
+			input:    "kfXf",
+			expected: "갑사",
+		},
+		{
+			name:     "double final + initial (값ㄴ)",
+			input:    "kfXs",
+			expected: "값ㄴ",
+		},
+		{
+			name:     "complex medial (ㄴㅇㅂ)",
+			input:    "sj;",
+			expected: "ㄴㅇㅂ",
+		},
+		{
+			name:     "complex medial + final (ㄴㅇㅂㄱ)",
+			input:    "sj;k",
+			expected: "ㄴㅇㅂㄱ",
+		},
+		{
+			name:     "shift + initial (ㄶㅏ)",
+			input:    "Sf",
+			expected: "ㄶㅏ",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			lt := NewLogoTyperWithLayout(SebulshikFinalLayout)
+			lt.WriteString(tt.input)
 			result := string(lt.Result())
 			if result != tt.expected {
 				t.Errorf("expected %q, got %q", tt.expected, result)
